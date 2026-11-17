@@ -92,16 +92,29 @@ public class Main {
             return;
         }
 
-        // %-32s oznacza “tekst, wyrównany do lewej, na szerokości 32 znaków”, %-4d to samo dla liczby,
-        // a %n to znak nowej linii zależny od systemu (na Windowsie \r\n).
+        printTableHeader();
+        for (int i = 0; i < titles.size(); i++) {
+            printBookRow(i);
+        }
+    }
+
+    /**
+     * Wypisuje nagłówek tabeli książek wraz z linią oddzielającą.
+     */
+    private static void printTableHeader() {
         System.out.printf("%-4s %-32s %-28s %-6s %s%n", "Nr", "Tytuł", "Autor", "Rok", "Status");
         System.out.println("-".repeat(85));
+    }
 
-        for (int i = 0; i < titles.size(); i++) {
-            String status = available.get(i) ? "dostępna" : "wypożyczona";
-            System.out.printf("%-4d %-32s %-28s %-6d %s%n",
-                    i + 1, titles.get(i), authors.get(i), years.get(i), status);
-        }
+    /**
+     * Wypisuje jeden wiersz tabeli z danymi wskazanej książki.
+     *
+     * @param index indeks książki na liście (liczony od 0), w tabeli wyświetlany jako numer od 1
+     */
+    private static void printBookRow(int index) {
+        String status = available.get(index) ? "dostępna" : "wypożyczona";
+        System.out.printf("%-4d %-32s %-28s %-6d %s%n",
+                index + 1, titles.get(index), authors.get(index), years.get(index), status);
     }
 
     /**
