@@ -56,8 +56,9 @@ public class Main {
             switch (choice) {
                 case 1 -> printBooks();
                 case 2 -> addBook();
-                case 3, 4, 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");
-                case 0 -> running = false;
+                case 3 -> editBook();
+                case 4 -> deleteBook();
+                case 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");                case 0 -> running = false;
                 default -> System.out.println("Nie ma takiej opcji, wybierz numer z menu.");
             }
             System.out.println();
@@ -126,6 +127,76 @@ public class Main {
     }
 
     /**
+     * Edytuje wybraną książkę. Pokazuje tabelę, pyta o numer książki i o nowe wartości pól.
+     * Pusty wpis (sam Enter) zostawia bieżącą wartość. Odrzuca zmianę,
+     * jeśli inna książka ma już taki sam tytuł i autora.
+     */
+    private static void editBook() {
+        if (titles.isEmpty()) {
+            System.out.println("Biblioteka jest pusta, nie ma czego edytować.");
+            return;
+        }
+
+        printBooks();
+        int number = readIntInRange("Podaj numer książki do edycji (0 = anuluj): ", 0, titles.size());
+        if (number == 0) {
+            System.out.println("Anulowano edycję.");
+            return;
+        }
+        int index = number - 1;
+
+        System.out.println("Edycja książki nr " + number + ". Enter zostawia bieżącą wartość.");
+        String newTitle = readTextOrKeep("Tytuł", titles.get(index));
+        String newAuthor = readTextOrKeep("Autor", authors.get(index));
+
+        if (bookExists(newTitle, newAuthor, index)) {
+            System.out.println("Inna książka ma już taki tytuł i autora, nie zapisano zmian.");
+            return;
+        }
+
+        int newYear = readYearOrKeep(years.get(index));
+
+        titles.set(index, newTitle);
+        authors.set(index, newAuthor);
+        years.set(index, newYear);
+        System.out.println("Zapisano zmiany w książce nr " + number + ".");
+    }
+
+    /**
+     * Usuwa wybraną książkę. Pokazuje tabelę, pyta o numer książki i o potwierdzenie.
+     * Nie pozwala usunąć książki, która jest aktualnie wypożyczona.
+     * Po usunięciu numery kolejnych książek przesuwają się o jeden w dół.
+     */
+    private static void deleteBook() {
+        if (titles.isEmpty()) {
+            System.out.println("Biblioteka jest pusta, nie ma czego usuwać.");
+            return;
+        }
+
+        printBooks();
+        int number = readIntInRange("Podaj numer książki do usunięcia (0 = anuluj): ", 0, titles.size());
+        if (number == 0) {
+            System.out.println("Anulowano usuwanie.");
+            return;
+        }
+        int index = number - 1;
+
+        if (!available.get(index)) {
+            System.out.println("Nie można usunąć książki, która jest aktualnie wypożyczona.");
+            return;
+        }
+
+        boolean confirmed = readYesNo("Czy na pewno usunąć \"" + titles.get(index) + "\"? (t/n): ");
+        if (!confirmed) {
+            System.out.println("Anulowano usuwanie.");
+            return;
+        }
+
+        removeBookData(index);
+        System.out.println("Usunięto książkę. Numery kolejnych książek zostały przesunięte.");
+    }
+
+    /**
      * Sprawdza, czy w bibliotece jest już książka o podanym tytule i autorze.
      * Porównanie nie rozróżnia wielkości liter.
      *
@@ -134,7 +205,24 @@ public class Main {
      * @return true, jeśli taka książka już istnieje
      */
     private static boolean bookExists(String title, String author) {
+        return bookExists(title, author, -1);
+    }
+
+    /**
+     * Sprawdza, czy w bibliotece jest książka o podanym tytule i autorze,
+     * pomijając książkę na wskazanej pozycji. Przydaje się przy edycji,
+     * żeby książka nie była uznana za duplikat samej siebie.
+     *
+     * @param title        szukany tytuł
+     * @param author       szukany autor
+     * @param ignoredIndex indeks pomijanej książki, -1 oznacza brak pomijania
+     * @return true, jeśli istnieje inna książka o takim tytule i autorze
+     */
+    private static boolean bookExists(String title, String author, int ignoredIndex) {
         for (int i = 0; i < titles.size(); i++) {
+            if (i == ignoredIndex) {
+                continue;
+            }
             if (titles.get(i).equalsIgnoreCase(title) && authors.get(i).equalsIgnoreCase(author)) {
                 return true;
             }
@@ -168,6 +256,19 @@ public class Main {
         authors.add(author);
         years.add(year);
         available.add(isAvailable);
+    }
+
+    /**
+     * Usuwa dane jednej książki ze wszystkich czterech list.
+     * Dzięki temu listy zawsze mają tę samą długość.
+     *
+     * @param index indeks usuwanej książki (liczony od 0)
+     */
+    private static void removeBookData(int index) {
+        titles.remove(index);
+        authors.remove(index);
+        years.remove(index);
+        available.remove(index);
     }
 
     /**
@@ -223,6 +324,68 @@ public class Main {
                 return value;
             }
             System.out.println("Podaj liczbę z zakresu od " + min + " do " + max + ".");
+        }
+    }
+
+    /**
+     * Wypisuje etykietę z bieżącą wartością w nawiasie kwadratowym i odczytuje nowy tekst.
+     * Pusty wpis oznacza pozostawienie bieżącej wartości.
+     *
+     * @param label   nazwa pola wyświetlana użytkownikowi
+     * @param current bieżąca wartość pola
+     * @return nowy tekst albo bieżąca wartość, gdy użytkownik nic nie wpisał
+     */
+    private static String readTextOrKeep(String label, String current) {
+        System.out.print(label + " [" + current + "]: ");
+        String input = scanner.nextLine().trim();
+        return input.isEmpty() ? current : input;
+    }
+
+    /**
+     * Odczytuje rok wydania z możliwością pozostawienia bieżącej wartości.
+     * Pusty wpis zostawia bieżący rok, a niepoprawny wpis wywołuje ponowne pytanie.
+     *
+     * @param current bieżący rok wydania
+     * @return nowy rok z przedziału od MIN_YEAR do bieżącego roku albo dotychczasowy rok
+     */
+    private static int readYearOrKeep(int current) {
+        int maxYear = Year.now().getValue();
+        while (true) {
+            System.out.print("Rok wydania [" + current + "]: ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                return current;
+            }
+            try {
+                int year = Integer.parseInt(input);
+                if (year >= MIN_YEAR && year <= maxYear) {
+                    return year;
+                }
+                System.out.println("Podaj liczbę z zakresu od " + MIN_YEAR + " do " + maxYear + ".");
+            } catch (NumberFormatException e) {
+                System.out.println("To nie jest liczba, spróbuj jeszcze raz.");
+            }
+        }
+    }
+
+    /**
+     * Wypisuje pytanie i odczytuje odpowiedź tak lub nie (t/n, wielkość liter nie ma znaczenia).
+     * Pyta ponownie, dopóki odpowiedź nie jest poprawna.
+     *
+     * @param prompt pytanie wyświetlane użytkownikowi
+     * @return true dla odpowiedzi "t", false dla odpowiedzi "n"
+     */
+    private static boolean readYesNo(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("t")) {
+                return true;
+            }
+            if (input.equals("n")) {
+                return false;
+            }
+            System.out.println("Wpisz t (tak) albo n (nie).");
         }
     }
 }
