@@ -19,7 +19,7 @@ Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
 - [x] dodawanie książki z walidacją (puste pola, zakres roku, duplikaty)
 - [x] edycja książki (pusty Enter zostawia bieżącą wartość)
 - [x] usuwanie książki z potwierdzeniem (wypożyczonej nie można usunąć)
-- [ ] wyszukiwanie po tytule i autorze
+- [x] wyszukiwanie po tytule i autorze (bez względu na wielkość liter i polskie znaki)
 - [ ] wypożyczanie i zwrot książek
 
 ## Technologie
