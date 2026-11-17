@@ -1,5 +1,6 @@
 package pl.tajko.library;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.time.Year;
 import java.util.List;
@@ -58,7 +59,8 @@ public class Main {
                 case 2 -> addBook();
                 case 3 -> editBook();
                 case 4 -> deleteBook();
-                case 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");                case 0 -> running = false;
+                case 5 -> searchBooks();
+                case 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");               case 0 -> running = false;
                 default -> System.out.println("Nie ma takiej opcji, wybierz numer z menu.");
             }
             System.out.println();
@@ -207,6 +209,42 @@ public class Main {
 
         removeBookData(index);
         System.out.println("Usunięto książkę. Numery kolejnych książek zostały przesunięte.");
+    }
+
+    /**
+     * Wyszukuje książki po fragmencie tytułu lub autora. Wielkość liter i polskie znaki
+     * diakrytyczne nie mają znaczenia. Wyniki są pokazane w tabeli z numerami z pełnej listy,
+     * dzięki czemu pasują do numerów używanych przy edycji i usuwaniu.
+     * Pusty wpis anuluje wyszukiwanie.
+     */
+    private static void searchBooks() {
+        System.out.print("Szukana fraza w tytule lub autorze (Enter = anuluj): ");
+        String phrase = scanner.nextLine().trim();
+        if (phrase.isEmpty()) {
+            System.out.println("Anulowano wyszukiwanie.");
+            return;
+        }
+
+        String normalizedPhrase = normalize(phrase);
+        int found = 0;
+
+        for (int i = 0; i < titles.size(); i++) {
+            boolean matches = normalize(titles.get(i)).contains(normalizedPhrase)
+                    || normalize(authors.get(i)).contains(normalizedPhrase);
+            if (matches) {
+                if (found == 0) {
+                    printTableHeader();
+                }
+                printBookRow(i);
+                found++;
+            }
+        }
+
+        if (found == 0) {
+            System.out.println("Nie znaleziono książek pasujących do frazy \"" + phrase + "\".");
+        } else {
+            System.out.println("Znaleziono: " + found);
+        }
     }
 
     /**
@@ -400,5 +438,18 @@ public class Main {
             }
             System.out.println("Wpisz t (tak) albo n (nie).");
         }
+    }
+
+    /**
+     * Przygotowuje tekst do porównywania przy wyszukiwaniu: zamienia litery na małe
+     * i usuwa polskie znaki diakrytyczne, np. "Wiedźmin" zamienia na "wiedzmin".
+     *
+     * @param text tekst do przetworzenia
+     * @return tekst małymi literami bez znaków diakrytycznych
+     */
+    private static String normalize(String text) {
+        String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
+        String withoutAccents = decomposed.replaceAll("\\p{M}", "");
+        return withoutAccents.toLowerCase().replace('ł', 'l');
     }
 }
