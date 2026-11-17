@@ -57,8 +57,8 @@ public class Main {
                 case 1 -> printBooks();
                 case 2 -> addBook();
                 case 3 -> editBook();
-                case 4, 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");
-                case 0 -> running = false;
+                case 4 -> deleteBook();
+                case 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");                case 0 -> running = false;
                 default -> System.out.println("Nie ma takiej opcji, wybierz numer z menu.");
             }
             System.out.println();
@@ -163,6 +163,40 @@ public class Main {
     }
 
     /**
+     * Usuwa wybraną książkę. Pokazuje tabelę, pyta o numer książki i o potwierdzenie.
+     * Nie pozwala usunąć książki, która jest aktualnie wypożyczona.
+     * Po usunięciu numery kolejnych książek przesuwają się o jeden w dół.
+     */
+    private static void deleteBook() {
+        if (titles.isEmpty()) {
+            System.out.println("Biblioteka jest pusta, nie ma czego usuwać.");
+            return;
+        }
+
+        printBooks();
+        int number = readIntInRange("Podaj numer książki do usunięcia (0 = anuluj): ", 0, titles.size());
+        if (number == 0) {
+            System.out.println("Anulowano usuwanie.");
+            return;
+        }
+        int index = number - 1;
+
+        if (!available.get(index)) {
+            System.out.println("Nie można usunąć książki, która jest aktualnie wypożyczona.");
+            return;
+        }
+
+        boolean confirmed = readYesNo("Czy na pewno usunąć \"" + titles.get(index) + "\"? (t/n): ");
+        if (!confirmed) {
+            System.out.println("Anulowano usuwanie.");
+            return;
+        }
+
+        removeBookData(index);
+        System.out.println("Usunięto książkę. Numery kolejnych książek zostały przesunięte.");
+    }
+
+    /**
      * Sprawdza, czy w bibliotece jest już książka o podanym tytule i autorze.
      * Porównanie nie rozróżnia wielkości liter.
      *
@@ -222,6 +256,19 @@ public class Main {
         authors.add(author);
         years.add(year);
         available.add(isAvailable);
+    }
+
+    /**
+     * Usuwa dane jednej książki ze wszystkich czterech list.
+     * Dzięki temu listy zawsze mają tę samą długość.
+     *
+     * @param index indeks usuwanej książki (liczony od 0)
+     */
+    private static void removeBookData(int index) {
+        titles.remove(index);
+        authors.remove(index);
+        years.remove(index);
+        available.remove(index);
     }
 
     /**
@@ -318,6 +365,27 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.println("To nie jest liczba, spróbuj jeszcze raz.");
             }
+        }
+    }
+
+    /**
+     * Wypisuje pytanie i odczytuje odpowiedź tak lub nie (t/n, wielkość liter nie ma znaczenia).
+     * Pyta ponownie, dopóki odpowiedź nie jest poprawna.
+     *
+     * @param prompt pytanie wyświetlane użytkownikowi
+     * @return true dla odpowiedzi "t", false dla odpowiedzi "n"
+     */
+    private static boolean readYesNo(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("t")) {
+                return true;
+            }
+            if (input.equals("n")) {
+                return false;
+            }
+            System.out.println("Wpisz t (tak) albo n (nie).");
         }
     }
 }
