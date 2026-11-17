@@ -17,7 +17,8 @@ Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
 - [x] menu główne z bezpiecznym odczytem wyboru
 - [x] lista książek w formie tabeli, z przykładowymi danymi
 - [x] dodawanie książki z walidacją (puste pola, zakres roku, duplikaty)
-- [ ] edycja i usuwanie książki
+- [x] edycja książki (pusty Enter zostawia bieżącą wartość)
+- [x] usuwanie książki z potwierdzeniem (wypożyczonej nie można usunąć)
 - [ ] wyszukiwanie po tytule i autorze
 - [ ] wypożyczanie i zwrot książek
 
