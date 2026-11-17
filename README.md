@@ -15,8 +15,8 @@ Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
 ## Funkcje
 
 - [x] menu główne z bezpiecznym odczytem wyboru
-- [ ] lista książek
-- [ ] dodawanie książki
+- [x] lista książek w formie tabeli, z przykładowymi danymi
+- [x] dodawanie książki z walidacją (puste pola, zakres roku, duplikaty)
 - [ ] edycja i usuwanie książki
 - [ ] wyszukiwanie po tytule i autorze
 - [ ] wypożyczanie i zwrot książek
@@ -47,3 +47,5 @@ Pracuję według GitFlow: stabilne wersje trafiają do `main`, bieżący rozwój
 ## Znane ograniczenia
 
 Dane przechowuję tylko w pamięci, więc po zamknięciu programu znikają. Zapis do pliku pojawi się w etapie 2.
+
+Dane trzymam w czterech równoległych listach (tytuły, autorzy, lata, dostępność), a numer książki to jej pozycja na liście, więc po usunięciu książki numery się przesuną. To celowy punkt wyjścia, w etapie 2 zastąpię je klasą `Book`. Tabela zakłada tytuły do 32 znaków i autorów do 28, dłuższe teksty rozjeżdżają kolumny.
