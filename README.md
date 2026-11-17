@@ -20,7 +20,7 @@ Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
 - [x] edycja książki (pusty Enter zostawia bieżącą wartość)
 - [x] usuwanie książki z potwierdzeniem (wypożyczonej nie można usunąć)
 - [x] wyszukiwanie po tytule i autorze (bez względu na wielkość liter i polskie znaki)
-- [ ] wypożyczanie i zwrot książek
+- [x] wypożyczanie i zwrot książek (tabela pokazuje tylko pasujące pozycje, z numerami z pełnej listy)
 
 ## Technologie
 
@@ -50,3 +50,5 @@ Pracuję według GitFlow: stabilne wersje trafiają do `main`, bieżący rozwój
 Dane przechowuję tylko w pamięci, więc po zamknięciu programu znikają. Zapis do pliku pojawi się w etapie 2.
 
 Dane trzymam w czterech równoległych listach (tytuły, autorzy, lata, dostępność), a numer książki to jej pozycja na liście, więc po usunięciu książki numery się przesuną. To celowy punkt wyjścia, w etapie 2 zastąpię je klasą `Book`. Tabela zakłada tytuły do 32 znaków i autorów do 28, dłuższe teksty rozjeżdżają kolumny.
+
+Wypożyczenie zapisuje tylko status książki, bez informacji o czytelniku i terminie zwrotu. Czytelników, historię wypożyczeń i terminy dodam w etapie 2.

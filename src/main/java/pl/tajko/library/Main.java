@@ -22,6 +22,9 @@ public class Main {
     /** Najwcześniejszy dopuszczalny rok wydania książki (początki druku w Europie). */
     private static final int MIN_YEAR = 1450;
 
+    /** Wartość zwracana, gdy użytkownik anulował wybór albo nie ma z czego wybierać. */
+    private static final int NO_SELECTION = -1;
+
     /**
      * Tytuły książek. Jedną książkę opisują elementy o tym samym indeksie
      * we wszystkich czterech listach (titles, authors, years, available).
@@ -60,7 +63,8 @@ public class Main {
                 case 3 -> editBook();
                 case 4 -> deleteBook();
                 case 5 -> searchBooks();
-                case 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");               case 0 -> running = false;
+                case 6 -> borrowBook();
+                case 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");            case 0 -> running = false;
                 default -> System.out.println("Nie ma takiej opcji, wybierz numer z menu.");
             }
             System.out.println();
@@ -117,6 +121,27 @@ public class Main {
         String status = available.get(index) ? "dostępna" : "wypożyczona";
         System.out.printf("%-4d %-32s %-28s %-6d %s%n",
                 index + 1, titles.get(index), authors.get(index), years.get(index), status);
+    }
+
+    /**
+     * Wypisuje w tabeli tylko książki o wskazanej dostępności. Numery w pierwszej kolumnie
+     * to numery z pełnej listy. Gdy nie ma żadnej pasującej książki, nic nie wypisuje.
+     *
+     * @param wantedAvailable true, aby pokazać książki dostępne, false, aby pokazać wypożyczone
+     * @return liczba wypisanych książek
+     */
+    private static int printBooksByStatus(boolean wantedAvailable) {
+        int count = 0;
+        for (int i = 0; i < titles.size(); i++) {
+            if (available.get(i) == wantedAvailable) {
+                if (count == 0) {
+                    printTableHeader();
+                }
+                printBookRow(i);
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -245,6 +270,27 @@ public class Main {
         } else {
             System.out.println("Znaleziono: " + found);
         }
+    }
+
+    /**
+     * Wypożycza książkę. Pokazuje tylko dostępne książki i prosi o numer jednej z nich.
+     * Wybrana książka dostaje status wypożyczonej.
+     */
+    private static void borrowBook() {
+        int count = printBooksByStatus(true);
+        if (count == 0) {
+            System.out.println("Brak dostępnych książek do wypożyczenia.");
+            return;
+        }
+
+        int index = readBookNumberWithStatus(true, "Podaj numer książki do wypożyczenia (0 = anuluj): ");
+        if (index == NO_SELECTION) {
+            System.out.println("Anulowano wypożyczenie.");
+            return;
+        }
+
+        available.set(index, false);
+        System.out.println("Wypożyczono książkę: " + titles.get(index));
     }
 
     /**
@@ -451,5 +497,28 @@ public class Main {
         String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
         String withoutAccents = decomposed.replaceAll("\\p{M}", "");
         return withoutAccents.toLowerCase().replace('ł', 'l');
+    }
+
+    /**
+     * Prosi o numer książki z pełnej listy i sprawdza, czy ma ona wymaganą dostępność.
+     * Pyta ponownie, dopóki numer nie wskazuje właściwej książki. Numer 0 anuluje wybór.
+     *
+     * @param wantedAvailable true, jeśli wybrana książka ma być dostępna, false, jeśli wypożyczona
+     * @param prompt          tekst wyświetlany przed odczytem
+     * @return indeks wybranej książki (liczony od 0) albo NO_SELECTION po anulowaniu
+     */
+    private static int readBookNumberWithStatus(boolean wantedAvailable, String prompt) {
+        while (true) {
+            int number = readIntInRange(prompt, 0, titles.size());
+            if (number == 0) {
+                return NO_SELECTION;
+            }
+
+            int index = number - 1;
+            if (available.get(index) == wantedAvailable) {
+                return index;
+            }
+            System.out.println("Ta książka nie znajduje się w wyświetlonej tabeli, wybierz numer z tabeli.");
+        }
     }
 }
