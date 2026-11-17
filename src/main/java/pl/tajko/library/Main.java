@@ -1,6 +1,7 @@
 package pl.tajko.library;
 
 import java.util.ArrayList;
+import java.time.Year;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,6 +17,9 @@ public class Main {
      * Nie zamykam go celowo, bo zamknięcie zamknęłoby też System.in.
      */
     private static final Scanner scanner = new Scanner(System.in);
+
+    /** Najwcześniejszy dopuszczalny rok wydania książki (początki druku w Europie). */
+    private static final int MIN_YEAR = 1450;
 
     /**
      * Tytuły książek. Jedną książkę opisują elementy o tym samym indeksie
@@ -51,7 +55,8 @@ public class Main {
 
             switch (choice) {
                 case 1 -> printBooks();
-                case 2, 3, 4, 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");
+                case 2 -> addBook();
+                case 3, 4, 5, 6, 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");
                 case 0 -> running = false;
                 default -> System.out.println("Nie ma takiej opcji, wybierz numer z menu.");
             }
@@ -99,6 +104,45 @@ public class Main {
     }
 
     /**
+     * Dodaje nową książkę do biblioteki. Pyta o tytuł, autora i rok wydania,
+     * sprawdza poprawność danych i odrzuca duplikaty. Nowa książka jest dostępna.
+     */
+    private static void addBook() {
+        System.out.println("--- Dodawanie książki ---");
+
+        String title = readNonEmptyText("Tytuł: ");
+        String author = readNonEmptyText("Autor: ");
+
+        if (bookExists(title, author)) {
+            System.out.println("Taka książka już jest w bibliotece, nie dodano duplikatu.");
+            return;
+        }
+
+        int currentYear = Year.now().getValue();
+        int year = readIntInRange("Rok wydania: ", MIN_YEAR, currentYear);
+
+        addBookData(title, author, year, true);
+        System.out.println("Dodano książkę o numerze " + titles.size() + ".");
+    }
+
+    /**
+     * Sprawdza, czy w bibliotece jest już książka o podanym tytule i autorze.
+     * Porównanie nie rozróżnia wielkości liter.
+     *
+     * @param title  szukany tytuł
+     * @param author szukany autor
+     * @return true, jeśli taka książka już istnieje
+     */
+    private static boolean bookExists(String title, String author) {
+        for (int i = 0; i < titles.size(); i++) {
+            if (titles.get(i).equalsIgnoreCase(title) && authors.get(i).equalsIgnoreCase(author)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Wczytuje przykładowe książki, żeby program od razu miał co pokazać.
      * Dane nie są zapisywane na dysku, więc po zamknięciu programu znikają.
      */
@@ -142,6 +186,43 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.println("To nie jest liczba, spróbuj jeszcze raz.");
             }
+        }
+    }
+
+    /**
+     * Wypisuje komunikat i odczytuje z konsoli niepusty tekst.
+     * Spacje na początku i na końcu są usuwane. Pyta ponownie, dopóki tekst jest pusty.
+     *
+     * @param prompt tekst wyświetlany przed odczytem
+     * @return niepusty tekst wpisany przez użytkownika
+     */
+    private static String readNonEmptyText(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (!input.isEmpty()) {
+                return input;
+            }
+            System.out.println("Wartość nie może być pusta.");
+        }
+    }
+
+    /**
+     * Wypisuje komunikat i odczytuje liczbę całkowitą z podanego zakresu (włącznie z krańcami).
+     * Pyta ponownie, dopóki liczba nie mieści się w zakresie.
+     *
+     * @param prompt tekst wyświetlany przed odczytem
+     * @param min    najmniejsza dopuszczalna wartość
+     * @param max    największa dopuszczalna wartość
+     * @return liczba z zakresu wpisana przez użytkownika
+     */
+    private static int readIntInRange(String prompt, int min, int max) {
+        while (true) {
+            int value = readInt(prompt);
+            if (value >= min && value <= max) {
+                return value;
+            }
+            System.out.println("Podaj liczbę z zakresu od " + min + " do " + max + ".");
         }
     }
 }
