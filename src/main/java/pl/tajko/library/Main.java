@@ -64,7 +64,8 @@ public class Main {
                 case 4 -> deleteBook();
                 case 5 -> searchBooks();
                 case 6 -> borrowBook();
-                case 7 -> System.out.println("Ta funkcja jest jeszcze w przygotowaniu.");            case 0 -> running = false;
+                case 7 -> returnBook();
+                case 0 -> running = false;
                 default -> System.out.println("Nie ma takiej opcji, wybierz numer z menu.");
             }
             System.out.println();
@@ -291,6 +292,27 @@ public class Main {
 
         available.set(index, false);
         System.out.println("Wypożyczono książkę: " + titles.get(index));
+    }
+
+    /**
+     * Przyjmuje zwrot książki. Pokazuje tylko wypożyczone książki i prosi o numer jednej z nich.
+     * Wybrana książka dostaje status dostępnej.
+     */
+    private static void returnBook() {
+        int count = printBooksByStatus(false);
+        if (count == 0) {
+            System.out.println("Żadna książka nie czeka na zwrot.");
+            return;
+        }
+
+        int index = readBookNumberWithStatus(false, "Podaj numer zwracanej książki (0 = anuluj): ");
+        if (index == NO_SELECTION) {
+            System.out.println("Anulowano zwrot.");
+            return;
+        }
+
+        available.set(index, true);
+        System.out.println("Zwrócono książkę: " + titles.get(index));
     }
 
     /**
