@@ -6,7 +6,7 @@ Konsolowa aplikacja do zarządzania biblioteką, napisana w Javie. To pierwszy z
 
 | Etap | Projekt | Zakres | Status |
 |------|---------|--------|--------|
-| 1/3 | **libris-cli** (ten projekt) | podstawy Javy, menu w konsoli, CRUD w pamięci | w trakcie |
+| 1/3 | **libris-cli** (ten projekt) | podstawy Javy, menu w konsoli, CRUD w pamięci | ukończony (v1.0.0) |
 | 2/3 | libris-core | podział na klasy i pakiety, zapis danych do pliku JSON | planowany |
 | 3/3 | libris-api | REST API, Spring Boot, baza danych | planowany |
 
@@ -27,23 +27,26 @@ Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
 | Narzędzie | Wersja |
 |-----------|--------|
 | Java (JDK) | 25 (25.0.1) |
-| Maven | wtyczki: maven-compiler-plugin 3.14.0, maven-jar-plugin 3.4.2 |
+| Maven | 3 (wbudowany w IntelliJ IDEA), wtyczki: maven-compiler-plugin 3.14.0, maven-jar-plugin 3.4.2 |
 | IntelliJ IDEA | 2026.2.3 |
 
 ## Uruchomienie
 
-Wymagane są JDK 25 i Maven.
+### Gotowy plik JAR
+
+Gotowy plik można pobrać ze strony [Releases](https://github.com/Tajko725/libris-cli/releases). Do uruchomienia wystarczy Java 25:
 
 ```
-mvn package
-java -jar target/libris-cli-0.1.0-SNAPSHOT.jar
+java -jar libris-cli-1.0.0.jar
 ```
 
-Program można też uruchomić z IntelliJ IDEA, uruchamiając klasę `Main`.
+### Budowanie ze źródeł
+
+Projekt otwieram w IntelliJ IDEA i w panelu Maven wybieram `Lifecycle` → `package`. Plik powstaje w `target/libris-cli-1.0.0.jar`. Program można też uruchomić bezpośrednio z IDE, uruchamiając klasę `Main`.
 
 ## Organizacja pracy
 
-Pracuję według GitFlow: stabilne wersje trafiają do `main`, bieżący rozwój do `develop`, a każda funkcja powstaje na osobnym branchu `feature/*` i wraca do `develop` przez Pull Request. Commity piszę po polsku, z prefiksami z konwencji Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
+Pracuję według GitFlow: stabilne wersje trafiają do `main`, bieżący rozwój do `develop`, a każda funkcja powstaje na osobnym branchu `feature/*` i wraca do `develop` przez merge z `--no-ff`, dzięki czemu każda funkcja jest widoczna w historii jako osobna gałąź. Pull Requesty zacznę stosować w kolejnych etapach. Commity piszę po polsku, z prefiksami z konwencji Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
 
 ## Znane ograniczenia
 
