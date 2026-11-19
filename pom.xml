@@ -6,7 +6,7 @@
 
     <groupId>pl.tajko.library</groupId>
     <artifactId>libris-cli</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>Libris CLI</name>
