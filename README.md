@@ -7,10 +7,10 @@ Konsolowa aplikacja do zarządzania biblioteką, napisana w Javie. To pierwszy z
 | Etap | Projekt | Zakres | Status |
 |------|---------|--------|--------|
 | 1/3 | **libris-cli** (ten projekt) | podstawy Javy, menu w konsoli, CRUD w pamięci | ukończony (v1.0.0) |
-| 2/3 | libris-core | podział na klasy i pakiety, zapis danych do pliku JSON | planowany |
+| 2/3 | [libris-core](https://github.com/Tajko725/libris-core) | podział na klasy i pakiety, zapis danych do pliku JSON | ukończony (v1.0.0) |
 | 3/3 | libris-api | REST API, Spring Boot, baza danych | planowany |
 
-Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
+Link do etapu 3 dodam, gdy powstanie repozytorium.
 
 ## Funkcje
 
@@ -37,21 +37,21 @@ Linki do kolejnych etapów dodam, gdy powstaną repozytoria.
 Gotowy plik można pobrać ze strony [Releases](https://github.com/Tajko725/libris-cli/releases). Do uruchomienia wystarczy Java 25:
 
 ```
-java -jar libris-cli-1.0.0.jar
+java -jar libris-cli-1.0.1.jar
 ```
 
 ### Budowanie ze źródeł
 
-Projekt otwieram w IntelliJ IDEA i w panelu Maven wybieram `Lifecycle` → `package`. Plik powstaje w `target/libris-cli-1.0.0.jar`. Program można też uruchomić bezpośrednio z IDE, uruchamiając klasę `Main`.
+Projekt otwieram w IntelliJ IDEA i w panelu Maven wybieram `Lifecycle` → `package`. Plik powstaje w `target/libris-cli-1.0.1.jar`. Program można też uruchomić bezpośrednio z IDE, uruchamiając klasę `Main`.
 
 ## Organizacja pracy
 
-Pracuję według GitFlow: stabilne wersje trafiają do `main`, bieżący rozwój do `develop`, a każda funkcja powstaje na osobnym branchu `feature/*` i wraca do `develop` przez merge z `--no-ff`, dzięki czemu każda funkcja jest widoczna w historii jako osobna gałąź. Pull Requesty zacznę stosować w kolejnych etapach. Commity piszę po polsku, z prefiksami z konwencji Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
+Pracuję według GitFlow: stabilne wersje trafiają do `main`, bieżący rozwój do `develop`, a każda funkcja powstaje na osobnym branchu `feature/*` i wraca do `develop` przez merge z `--no-ff`, dzięki czemu każda funkcja jest widoczna w historii jako osobna gałąź. Pull Requesty zacząłem stosować w etapie 2 ([libris-core](https://github.com/Tajko725/libris-core)), a w tym projekcie scalałem branche lokalnie. Poprawkę 1.0.1 przeprowadziłem już przez Pull Requesty. Commity piszę po polsku, z prefiksami z konwencji Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
 
 ## Znane ograniczenia
 
-Dane przechowuję tylko w pamięci, więc po zamknięciu programu znikają. Zapis do pliku pojawi się w etapie 2.
+Dane przechowuję tylko w pamięci, więc po zamknięciu programu znikają. Zapis do pliku JSON jest już w etapie 2 ([libris-core](https://github.com/Tajko725/libris-core)).
 
-Dane trzymam w czterech równoległych listach (tytuły, autorzy, lata, dostępność), a numer książki to jej pozycja na liście, więc po usunięciu książki numery się przesuną. To celowy punkt wyjścia, w etapie 2 zastąpię je klasą `Book`. Tabela zakłada tytuły do 32 znaków i autorów do 28, dłuższe teksty rozjeżdżają kolumny.
+Dane trzymam w czterech równoległych listach (tytuły, autorzy, lata, dostępność), a numer książki to jej pozycja na liście, więc po usunięciu książki numery się przesuną. To celowy punkt wyjścia, w etapie 2 zastąpiłem je klasą `Book`. Tabela zakłada tytuły do 32 znaków i autorów do 28, dłuższe teksty rozjeżdżają kolumny.
 
-Wypożyczenie zapisuje tylko status książki, bez informacji o czytelniku i terminie zwrotu. Czytelników, historię wypożyczeń i terminy dodam w etapie 2.
+Wypożyczenie zapisuje tylko status książki, bez informacji o czytelniku i terminie zwrotu. Czytelników, historię wypożyczeń i terminy dodałem w etapie 2.
