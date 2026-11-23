@@ -8,7 +8,7 @@ Konsolowa aplikacja do zarządzania biblioteką, napisana w Javie. To pierwszy z
 |------|---------|--------|--------|
 | 1/3 | **libris-cli** (ten projekt) | podstawy Javy, menu w konsoli, CRUD w pamięci | ukończony (v1.0.1) |
 | 2/3 | [libris-core](https://github.com/Tajko725/libris-core) | podział na klasy i pakiety, zapis danych do pliku JSON | ukończony (v1.0.0) |
-| 3/3 | [libris-api](https://github.com/Tajko725/libris-api)| REST API, Spring Boot, baza danych | ukończony (v1.0.0) |
+| 3/3 | [libris-api](https://github.com/Tajko725/libris-api)| REST API, Spring Boot, baza danych | ukończony (v1.1.0) |
 
 ## Funkcje
 
